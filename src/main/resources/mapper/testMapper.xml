@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.test.mapper.HelloMapper">
+
+    <sql id="equipTable">tb_ids_equip</sql>
+    <sql id="statusTable">tb_ids_equip_state</sql>
+    <sql id="cameraTable">tb_ids_camera_info</sql>
+    <sql id="linkCodeTable">tb_ids_link_code</sql>
+    <sql id="roadTable">tb_ids_road</sql>
+
+    <select id="selectCameradashboardList"  resultType="java.util.HashMap">
+        SELECT
+        RTRIM(camera_id) AS camera_id,
+        RTRIM(equip_id) as equip_id,
+        rtsp_url,
+        name,
+        link_code,
+        position,
+        camera_index,
+        rtsp_alias,
+        inst_height
+        FROM tb_ids_camera_info
+        WHERE link_code IN ('LNK-0450-CMT', 'LNK-0450-MCT')
+        <if test="tech != position">
+            order by position asc
+        </if>
+
+    </select>
+    <select id="getStatusList"  resultType="java.util.HashMap">
+        SELECT
+            s.id,
+            s.state,
+            c.camera_index,
+            eq.tech
+        FROM
+            tb_ids_equip_state s
+                INNER JOIN
+            tb_ids_camera_info c
+            ON
+                        s.id = c.camera_id
+                    or s.id = c.bracket_type
+                INNER JOIN
+            tb_ids_equip eq
+            ON c.equip_id = eq.equip_id
+    </select>
+</mapper>
