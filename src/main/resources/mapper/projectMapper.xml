@@ -1,0 +1,5 @@
+<mapper namespace="com.demo.demoproject.model.repository.UserMapper">
+    <select id="selectUser" resultType="User">
+        select * from [테이블명] where [컬럼1]=#{[값1]} and [컬럼2]=#{[값2]}
+    </select>
+</mapper>

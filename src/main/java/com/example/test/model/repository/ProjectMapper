@@ -1,0 +1,5 @@
+@Mapper
+public interface ProjectMapper {
+	// 메소드명은 Mapper.xml에 작성될 쿼리문의 ID
+    User selectUser(User user);
+}
