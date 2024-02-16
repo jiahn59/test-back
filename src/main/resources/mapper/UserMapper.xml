@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.test.mapper.UserMapper">
+
+
+    <select id="getUserList" parameterType="DefaultSearchParam" resultType="java.util.HashMap">
+        SELECT *
+        FROM
+        projectuser
+<!--        <where>-->
+<!--            <if test="searchWord != null and searchWord !=''">-->
+<!--                project_name LIKE CONCAT('%', #{searchWord}, '%')-->
+<!--            </if>-->
+<!--        </where>-->
+        ORDER BY project_code
+        LIMIT #{rowNum}
+        OFFSET #{pageNum}
+    </select>
+    <select id="getUserListCount" parameterType="DefaultSearchParam" resultType="int" >
+        SELECT count(*)
+        FROM
+        projectuser
+<!--        <where>-->
+<!--            <if test="searchWord != null and searchWord !=''">-->
+<!--                project_name LIKE CONCAT('%', #{searchWord}, '%')-->
+<!--            </if>-->
+<!--        </where>-->
+
+    </select>
+    <insert id="inserttabe" parameterType="java.util.List">
+        INSERT INTO projectsample(
+        situation,
+        detail_situation,
+        project_name,
+        description,
+        start_day,
+        end_day,
+        down_payment,
+        manager) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.situation},
+            #{item.detail_situation},
+            #{item.project_name},
+            #{item.description},
+            #{item.start_day},
+            #{item.end_day},
+            #{item.down_payment},
+            #{item.manager}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteUser" parameterType="string">
+        DELETE FROM
+            projectsample
+        WHERE
+            project_code = #{project_code}
+    </delete>
+
+
+    <insert id="insertExcelList" parameterType="java.util.List">
+        INSERT INTO projectuser(
+         user_name,
+         user_role,
+         user_division,
+         conduct,
+         grade,
+         start_day,
+         end_day,
+         project_code)VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.user_name},
+            #{item.user_role},
+            #{item.user_division},
+            #{item.conduct},
+            #{item.grade},
+            #{item.start_day},
+            #{item.end_day},
+            #{item.project_code}            )
+        </foreach>
+    </insert>
+</mapper>

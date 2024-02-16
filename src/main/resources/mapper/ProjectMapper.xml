@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.test.mapper.ProjectMapper">
+
+
+    <select id="getProjectList" parameterType="DefaultSearchParam" resultType="java.util.HashMap">
+        SELECT *
+        FROM
+        projectsample
+        <where>
+            <if test="searchWord != null and searchWord !=''">
+                project_name LIKE CONCAT('%', #{searchWord}, '%')
+            </if>
+        </where>
+        ORDER BY project_code
+        LIMIT #{rowNum}
+        OFFSET #{pageNum}
+    </select>
+    <select id="getProjectCount" parameterType="DefaultSearchParam" resultType="int" >
+        SELECT count(*)
+        FROM
+        projectsample
+        <where>
+            <if test="searchWord != null and searchWord !=''">
+                project_name LIKE CONCAT('%', #{searchWord}, '%')
+            </if>
+        </where>
+
+    </select>
+    <insert id="inserttabe" parameterType="java.util.List">
+        INSERT INTO projectsample(
+        project_code,
+        situation,
+        detail_situation,
+        project_name,
+        description,
+        start_day,
+        end_day,
+        down_payment,
+        manager) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.project_code},
+            #{item.situation},
+            #{item.detail_situation},
+            #{item.project_name},
+            #{item.description},
+            #{item.start_day},
+            #{item.end_day},
+            #{item.down_payment},
+            #{item.manager}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="insertProject" parameterType="java.util.Map">
+        INSERT INTO projectsample(
+        situation,
+        detail_situation,
+        project_name,
+        description,
+        start_day,
+        end_day,
+        down_payment,
+        manager) VALUES
+            (
+            #{situation},
+            #{detail_situation},
+            #{project_name},
+            #{description},
+            #{start_day},
+            #{end_day},
+            #{down_payment},
+            #{manager}
+            )
+    </insert>
+    <delete id="deleteProject" parameterType="string">
+        DELETE FROM
+            projectsample
+        WHERE
+            project_code = #{project_code}
+    </delete>
+
+
+    <select id="ProjectGroupList" resultType="java.util.HashMap">
+        SELECT a.project_name ,b.user_role  , COUNT(b.user_role) AS cnt
+        FROM projectsample a
+                 LEFT JOIN projectuser b
+                           ON cast(a.project_code as int) = cast(b.project_code as int)
+        GROUP BY a.project_code , b.user_role
+        ORDER BY a.project_code
+            LIMIT #{rowNum}
+        OFFSET #{pageNum};
+    </select>
+    <select id="ProjectGroupCountList" resultType="java.util.HashMap">
+        SELECT a.project_name , b.user_role  , COUNT(b.user_role) AS cnt
+        FROM projectsample a
+                 LEFT JOIN projectuser b
+                           ON cast(a.project_code as int) = cast(b.project_code as int)
+        GROUP BY a.project_code , b.user_role
+        ORDER BY a.project_code
+
+    </select>
+
+
+    <select id="ProjectGroupUserCountList" resultType="java.util.HashMap">
+        select A.project_name, COUNT(b.user_name)
+        from projectsample A
+                 left join projectuser b
+                           on cast(A.project_code as int) = cast(b.project_code as int)
+        group by A.project_code
+        ORDER BY a.project_code
+            LIMIT #{rowNum}
+        OFFSET #{pageNum};
+    </select>
+    <select id="ProjectGroupUserCountListCount" resultType="java.util.HashMap">
+        select A.project_name, COUNT(b.user_name)
+        from projectsample A
+                 left join projectuser b
+                           on cast(A.project_code as int) = cast(b.project_code as int)
+        group by A.project_code;
+    </select>
+
+</mapper>
